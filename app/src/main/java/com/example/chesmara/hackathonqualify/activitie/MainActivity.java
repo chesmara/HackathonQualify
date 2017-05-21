@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                             }else {
                                 Toast.makeText(MainActivity.this,"There is more than one user with this e-mail!!!", Toast.LENGTH_SHORT).show();
                             }
+                            dialog.dismiss();
 
 
 
