@@ -1,6 +1,8 @@
 package com.example.chesmara.hackathonqualify.activitie;
 
 import android.app.Dialog;
+import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,17 +10,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.chesmara.hackathonqualify.R;
 import com.example.chesmara.hackathonqualify.dbase.DatabaseHelper;
 import com.example.chesmara.hackathonqualify.dbase.model.User;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private DatabaseHelper databaseHelper;
+    public static  final String USER_ID = "whichUser";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +58,61 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         EditText email=(EditText) dialog.findViewById(R.id.user_email);
-                        EditText password = (EditText) dialog.findViewById(R.id.user_password);
+                        EditText password = (EditText) dialog.findViewById(R.id.user_password_login);
+
+                        List<User> checkList=null;
+                        try {
+
+                              checkList = getDatabaseHelper().getmUserDao().queryBuilder()
+                                    .where()
+                                    .eq(User.FIELD_USER_EMAIL, email.getText())
+                                    .query();
+
+
+                            if(checkList.size()==1){
+                                User theUser = checkList.get(0);
+                                String pass=theUser.getuPassword().toString();
+                                String typedpass=password.getText().toString();
+
+                                if (typedpass.equals(pass)){
+
+                                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                                    int userident= checkList.get(0).getuId();
+                                    intent.putExtra(USER_ID, userident );
+                                    startActivity(intent);
+
+
+                                }else{
+                                    Toast.makeText(MainActivity.this,"Wrong password", Toast.LENGTH_SHORT).show();
+                                }
+                            }else {
+                                Toast.makeText(MainActivity.this,"There is more than one user with this e-mail!!!", Toast.LENGTH_SHORT).show();
+                            }
+
+
+
+
+
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+
 
                     }
                 });
+
+
+                Button cancel = (Button) dialog.findViewById(R.id.cancel_login);
+                cancel.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+
+                dialog.show();
+                break;
 
     //-----------------------------------register------------------------------------------------
             case (R.id.register_dialog_presed):
@@ -68,17 +126,17 @@ public class MainActivity extends AppCompatActivity {
                         EditText userName = (EditText) regDialog.findViewById(R.id.user_name);
                         EditText userAdress = (EditText) regDialog.findViewById(R.id.user_adress);
                         EditText userEmail  = (EditText) regDialog.findViewById(R.id.user_email);
-                        EditText userPassword = (EditText) regDialog.findViewById(R.id.user_password);
+                        EditText userPassword = (EditText) regDialog.findViewById(R.id.user_password_register);
 
-                            User user = new User();
-                        user.setuName(userName.getText().toString());
-                        user.setuAdress(userAdress.getText().toString());
-                        user.setuEmail(userEmail.getText().toString());
-                        user.setuPassword(userPassword.getText().toString());
+                            User newUser = new User();
+                        newUser.setuName(userName.getText().toString());
+                        newUser.setuAdress(userAdress.getText().toString());
+                        newUser.setuEmail(userEmail.getText().toString());
+                        newUser.setuPassword(userPassword.getText().toString());
 
 
                         try {
-                            getDatabaseHelper().getmUserDao().create(user);
+                            getDatabaseHelper().getmUserDao().create(newUser);
 
                             regDialog.dismiss();
 
@@ -89,6 +147,18 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+
+                Button cancelCreate = (Button) regDialog.findViewById(R.id.cancel_create);
+                cancelCreate.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        regDialog.dismiss();
+                    }
+                });
+
+
+                regDialog.show();
+                break;
 
         }
 
