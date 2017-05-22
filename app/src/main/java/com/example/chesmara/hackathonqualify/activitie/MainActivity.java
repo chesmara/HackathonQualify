@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+  //-----------------------------------lista svih artikala--------------------------------------------------
+
             final ListView articlesView = (ListView) findViewById(R.id.all_articles_list);
 
         List<Article> articleList = null;
@@ -64,14 +66,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
-
-
-
-
-
     }
-
+//-----------------------------------munu for login and register---------------------------------------
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_toolbar, menu);
@@ -129,8 +125,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
@@ -178,6 +172,8 @@ public class MainActivity extends AppCompatActivity {
 
                             regDialog.dismiss();
 
+                                Toast.makeText(MainActivity.this, " Registration successful !!",Toast.LENGTH_SHORT).show();
+
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
@@ -204,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//--------------------------------------getHelper--------------------------------------------
+//--------------------------------------BD-Helper--------------------------------------------
 
     public DatabaseHelper getDatabaseHelper() {
         if (databaseHelper == null) {
