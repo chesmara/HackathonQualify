@@ -8,12 +8,17 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.chesmara.hackathonqualify.R;
 import com.example.chesmara.hackathonqualify.dbase.DatabaseHelper;
+import com.example.chesmara.hackathonqualify.dbase.model.Article;
 import com.example.chesmara.hackathonqualify.dbase.model.User;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -26,11 +31,43 @@ public class MainActivity extends AppCompatActivity {
 
     private DatabaseHelper databaseHelper;
     public static  final String USER_ID = "whichUser";
+    public static  final String ARTICLE_KEY = "articleKey";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+            final ListView articlesView = (ListView) findViewById(R.id.all_articles_list);
+
+        List<Article> articleList = null;
+        try {
+            articleList = getDatabaseHelper().getmArticleDao().queryForAll();
+
+            ListAdapter adapter=new ArrayAdapter<>(MainActivity.this, R.layout.list_item, articleList);
+            articlesView.setAdapter(adapter);
+
+            articlesView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Article a = (Article) articlesView.getItemAtPosition(position);
+
+                    Intent intent = new Intent(MainActivity.this, ArticleActivity.class);
+                    intent.putExtra(ARTICLE_KEY, a.getaId());
+                    startActivity(intent);
+                }
+            });
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
+
 
 
     }
