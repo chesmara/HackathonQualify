@@ -6,5 +6,9 @@
         android:title="Add article"
         app:showAsAction="ifRoom" />
 
+    <item android:id="@+id/view_type"
+        android:title="Two raws"
+        app:showAsAction="ifRoom"/>
+
 
 </menu>

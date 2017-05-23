@@ -200,6 +200,43 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+//--------------------------------------refresh for articles---------------------------------
+
+    private void refresh(){
+
+        ListView listView = (ListView) findViewById(R.id.all_articles_list);
+
+        if(listView !=null){
+            ArrayAdapter<Article> adapter= (ArrayAdapter) listView.getAdapter();
+
+            if(adapter !=null){
+
+                try {
+
+                    adapter.clear();
+                    List<Article> articleList= null;
+                    articleList = getDatabaseHelper().getmArticleDao().queryForAll();
+                    adapter.addAll(articleList);
+                    adapter.notifyDataSetChanged();
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+
+
+            }
+
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        refresh();
+    }
+
 //--------------------------------------BD-Helper--------------------------------------------
 
     public DatabaseHelper getDatabaseHelper() {

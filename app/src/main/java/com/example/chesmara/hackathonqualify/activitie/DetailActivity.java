@@ -66,15 +66,18 @@ public class DetailActivity extends AppCompatActivity {
 
        final  ListView userArticlesList = (ListView) findViewById(R.id.user_articles_list);
 
-        List<Article> ArtList= null;
+
         try {
-            ArtList = getDatabaseHelper().getmArticleDao().queryBuilder()
+            List<Article>  ArtList = getDatabaseHelper().getmArticleDao().queryBuilder()
                     .where()
                     .eq(Article.FIELD_NAME_USER, u.getuId())
                     .query();
 
-            ListAdapter artadapter = new ArrayAdapter<>(this,R.layout.list_item, ArtList);
+            ListAdapter artadapter = new ArrayAdapter<>(this, R.layout.list_item, ArtList);
             userArticlesList.setAdapter(artadapter);
+
+
+
 
             userArticlesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -121,13 +124,14 @@ public class DetailActivity extends AppCompatActivity {
                         EditText newName = (EditText) dialog.findViewById(R.id.add_article_name);
                         EditText newDesc = (EditText) dialog.findViewById(R.id.add_article_description);
                         EditText newPrice= (EditText) dialog.findViewById(R.id.add_article_price);
-                        //EditText newDate = (EditText) dialog.findViewById(R.id.add_article_date);
+
 
                         Article newA = new Article();
                         newA.setaName(newName.getText().toString());
                         newA.setaDescription(newDesc.getText().toString());
                         newA.setaPrice(newPrice.getText().toString());
                         newA.setaDate(new Date());
+                        newA.setaUser(u);
 
                         try {
                             getDatabaseHelper().getmArticleDao().create(newA);
@@ -137,11 +141,17 @@ public class DetailActivity extends AppCompatActivity {
 
                         dialog.dismiss();
 
+                        refresh();
+
 
                     }
                 });
 
                 dialog.show();
+
+
+            case (R.id.view_type):
+
 
 
 
@@ -153,10 +163,47 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+//------------------------------------refresh for user articles------------------------------------
+        private void refresh(){
+
+            ListView userArticlesList = (ListView) findViewById(R.id.user_articles_list);
+
+            if(userArticlesList != null){
+                ArrayAdapter<Article> adapter = (ArrayAdapter) userArticlesList.getAdapter();
+
+                    if(adapter !=null){
+
+
+                        try {
+                            adapter.clear();
+                            List<Article> articleList= null;
+                            articleList = getDatabaseHelper().getmArticleDao().queryBuilder()
+                                    .where()
+                                    .eq(Article.FIELD_NAME_USER, u.getuId())
+                                    .query();
+                            adapter.addAll(articleList);
+                            adapter.notifyDataSetChanged();
 
 
 
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
 
+                    }
+
+            }
+
+
+
+        }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        refresh();
+    }
 
     //----------------------------------------DB Helper--------------------------------------------
     public DatabaseHelper getDatabaseHelper() {
