@@ -43,9 +43,9 @@ public class MainActivity extends AppCompatActivity {
 
             final ListView articlesView = (ListView) findViewById(R.id.all_articles_list);
 
-        List<Article> articleList = null;
+
         try {
-            articleList = getDatabaseHelper().getmArticleDao().queryForAll();
+            List<Article>  articleList = getDatabaseHelper().getmArticleDao().queryForAll();
 
             ListAdapter adapter=new ArrayAdapter<>(MainActivity.this, R.layout.list_item, articleList);
             articlesView.setAdapter(adapter);
@@ -55,9 +55,16 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Article a = (Article) articlesView.getItemAtPosition(position);
 
-                    Intent intent = new Intent(MainActivity.this, ArticleActivity.class);
-                    intent.putExtra(ARTICLE_KEY, a.getaId());
-                    startActivity(intent);
+
+
+                   AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                    dialogBuilder.setTitle("Article data");
+                    dialogBuilder.setMessage("Name:  " + a.getaName().toString()+ "\n \nDescription:  "+ a.getaDescription()+ "\n\nPrice:  "+ a.getaPrice()+ "\n\nPosted on:  "+a.getaDate());
+                    dialogBuilder.setCancelable(true);
+
+                    AlertDialog dialog = dialogBuilder.create();
+                    dialog.show();
+
                 }
             });
 

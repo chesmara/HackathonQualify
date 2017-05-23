@@ -31,7 +31,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private DatabaseHelper databaseHelper;
     private User u;
-    public static  final String ARTICLE_KEY = "article key";
+    public static  final String ARTICLE_KEY_USER = "article key user";
 
     private EditText uName;
     private EditText uAdress;
@@ -76,15 +76,12 @@ public class DetailActivity extends AppCompatActivity {
             ListAdapter artadapter = new ArrayAdapter<>(this, R.layout.list_item, ArtList);
             userArticlesList.setAdapter(artadapter);
 
-
-
-
             userArticlesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Article ar= (Article) userArticlesList.getItemAtPosition(position);
                     Intent intent = new Intent(DetailActivity.this,ArticleActivity.class);
-                    intent.putExtra(ARTICLE_KEY, ar.getaId());
+                    intent.putExtra(ARTICLE_KEY_USER, ar.getaId());
                     startActivity(intent);
                 }
             });
@@ -144,6 +141,14 @@ public class DetailActivity extends AppCompatActivity {
                         refresh();
 
 
+                    }
+                });
+
+                Button cancel = (Button) dialog.findViewById(R.id.cacel_input);
+                cancel.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
                     }
                 });
 
