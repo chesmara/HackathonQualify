@@ -92,11 +92,8 @@ public class Article {
 
     @Override
     public String toString() {
-        return "Article{" +
-                "aName='" + aName + '\'' +
-                ", aDescription='" + aDescription + '\'' +
-                ", aPrice='" + aPrice + '\'' +
-                ", aDate=" + aDate +
-                '}';
+        return  aName + " "+ aDescription + " / Price: "+ aPrice ;
     }
 }
+
+

@@ -1,11 +1,15 @@
 package com.example.chesmara.hackathonqualify.activitie;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -17,6 +21,7 @@ import com.example.chesmara.hackathonqualify.dbase.model.User;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 //-----------------------------------------------------------------------------------------
 //---------------------------user data and articles----------------------------------------
@@ -26,7 +31,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private DatabaseHelper databaseHelper;
     private User u;
-    private static final String ARTICLE_KEY_DETAIL="article key detail";
+    public static  final String ARTICLE_KEY = "article key";
 
     private EditText uName;
     private EditText uAdress;
@@ -76,7 +81,7 @@ public class DetailActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Article ar= (Article) userArticlesList.getItemAtPosition(position);
                     Intent intent = new Intent(DetailActivity.this,ArticleActivity.class);
-                    intent.putExtra(ARTICLE_KEY_DETAIL, ar.getaId());
+                    intent.putExtra(ARTICLE_KEY, ar.getaId());
                     startActivity(intent);
                 }
             });
@@ -91,11 +96,74 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    //-----------------------------------menu for new article ---------------------------------------
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.detail_toolbar, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+
+        switch(item.getItemId()){
+
+            case (R.id.add_article):
+
+                final Dialog dialog = new Dialog(this);
+                dialog.setContentView(R.layout.add_article);
+
+                Button add= (Button) dialog.findViewById(R.id.add_article_click);
+                add.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EditText newName = (EditText) dialog.findViewById(R.id.add_article_name);
+                        EditText newDesc = (EditText) dialog.findViewById(R.id.add_article_description);
+                        EditText newPrice= (EditText) dialog.findViewById(R.id.add_article_price);
+                        //EditText newDate = (EditText) dialog.findViewById(R.id.add_article_date);
+
+                        Article newA = new Article();
+                        newA.setaName(newName.getText().toString());
+                        newA.setaDescription(newDesc.getText().toString());
+                        newA.setaPrice(newPrice.getText().toString());
+                        newA.setaDate(new Date());
+
+                        try {
+                            getDatabaseHelper().getmArticleDao().create(newA);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+
+                        dialog.dismiss();
+
+
+                    }
+                });
+
+                dialog.show();
+
+
+
+
+        }
+
+        return super.onOptionsItemSelected(item);
+
+
+    }
+
+
+
+
+
+
+    //----------------------------------------DB Helper--------------------------------------------
     public DatabaseHelper getDatabaseHelper() {
         if (databaseHelper == null) {
             databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
         }
         return databaseHelper;
     }
+
 }

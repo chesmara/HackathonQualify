@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DatabaseHelper databaseHelper;
     public static  final String USER_ID = "whichUser";
-    public static  final String ARTICLE_KEY = "articleKey";
+    public static  final String ARTICLE_KEY = "article key";
 
 
     @Override
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 dialog.show();
                 break;
 
-    //-----------------------------------register------------------------------------------------
+    //-----------------------------------register-----------------------------------------------------
             case (R.id.register_dialog_presed):
                 final Dialog regDialog = new Dialog(this);
                 regDialog.setContentView(R.layout.register_dialog);
